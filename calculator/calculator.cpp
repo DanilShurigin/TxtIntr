@@ -3,7 +3,7 @@
 Calculator::Calculator(int argc, char **argv) {
     descr.add_options()
         ("help", "Read help message")
-        ("operation", po::value<std::string>(&operation), "Set operation. Values: sum | sub")
+        ("operation", po::value<std::string>(&operation)->required(), "Set operation. Values: sum | sub")
         ("input-numbers", po::value< std::vector<int> >(&v), "Input numbers. From 3 to 5 numbers")
     ;
     
