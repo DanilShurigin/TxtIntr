@@ -3,11 +3,11 @@
 Calculator::Calculator(int argc, char **argv) {
     descr.add_options()
         ("help", "Read help message")
-        ("operation", po::value<std::string>(&operation)->required(), "Set operation. Values: sum | sub")
-        ("input-numbers", po::value< std::vector<int> >(&v), "Input numbers. From 3 to 5 numbers")
+        ("operation", po::value<std::string>(&operation), "Set operation. Values: sum | sub")
+        ("operands", po::value< std::vector<int> >(&v), "Input numbers. From 3 to 5 numbers")
     ;
     
-    p.add("input-numbers", -1);
+    p.add("operands", -1);
     po::store(po::command_line_parser(argc, argv).
               options(descr).positional(p).
               style(po::command_line_style::unix_style ^ po::command_line_style::allow_short).
@@ -24,23 +24,27 @@ void Calculator::operator()() {
 void Calculator::verify_input() {
     if ( vm.count("help") || vm.empty() ) {
         descr.print(std::cout);
-        exit(1);
+        exit(0);
     }
 
+    if( vm.count("operation") == 0 ) {
+        std::cerr << "The option '--operation' is required but missing" << std::endl;
+        exit(1);
+    }
     if ( vm.count("operation") ) {
-        if ( operation != sumName
-             && operation != subName ) {
+        if ( operation != sumName && operation != subName ) {
             std::cerr << "Wrong name of operation." << std::endl;
-            //descr.print(std::cout);
             exit(1);
         }
     }
 
-    if ( vm.count("input-numbers") ) {
-        if ( v.size() < minNum
-             || v.size() > maxNum ) {
+    if( vm.count("operands") == 0 ) {
+        std::cerr << "The option '--operands' is required but missing" << std::endl;
+        exit(1);
+    }
+    if ( vm.count("operands") ) {
+        if ( v.size() < minNum || v.size() > maxNum ) {
             std::cerr << "Wrong number of input numbers." << std::endl;
-            //descr.print(std::cout);
             exit(1);
         }
     }
@@ -65,20 +69,15 @@ void Calculator::print_result() {
               << result
               << std::endl;
 }
-/*
+
 void Calculator::get_com_line_params() {
-    if(vm.count("operation")) {
-        std::cout <<  "Operation is: "
+    std::cout <<  "Operation is: "
                   << operation
                   << std::endl;
-    }
-    
-    if(vm.count("input-numbers")) {
-        std::cout <<  "Numbers are: ";
+    std::cout <<  "Numbers are: ";
         for(int n : v) {
             std::cout << n << ' ';
         }
         std::cout << std::endl;
-    }
 }
-*/
+

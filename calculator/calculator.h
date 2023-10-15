@@ -29,7 +29,7 @@ public:
     Calculator() = delete;
     Calculator(int argc, char **argv);
     
-    //void get_com_line_params();
+    void get_com_line_params();
     void print_result();
     int get_result() { return result; }
     void operator()();
